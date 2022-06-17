@@ -7,6 +7,7 @@ use twmap::*;
 
 pub mod fly;
 pub mod maze;
+pub mod gore;
 
 pub const TILE_EMPTY: u8 = 0;
 pub const TILE_HOOKABLE: u8 = 1;
@@ -18,10 +19,10 @@ pub const TILE_FINISH: u8 = 34;
 pub const TILE_SPAWN: u8 = 192;
 
 pub trait MapGenerator {
-    fn generate<R: Rng + ?Sized>(rng: &mut R, width: usize, height: usize) -> Result<TwMap>;
-
-    fn save_file<R: Rng + ?Sized>(rng: &mut R, width: usize, height: usize, path: &Path) -> Result<()> {
-        let mut map = Self::generate(rng, width, height)?;
+    fn generate<R: Rng + ?Sized>(rng: &mut R) -> Result<TwMap>;
+    
+    fn save_file<R: Rng + ?Sized>(rng: &mut R, path: &Path) -> Result<()> {
+        let mut map = Self::generate(rng)?;
         map.save_file(path)?;
         Ok(())
     }
@@ -29,7 +30,7 @@ pub trait MapGenerator {
 
 pub fn create_initial_map() -> Result<TwMap> {
     let mut map = TwMap::empty(Version::DDNet06);
-    map.info.author = "github.com/edg-l/ddnet-map-gen".to_string();
+    map.info.author = "Tater".to_string();
     map.info.credits = "github.com/edg-l/ddnet-map-gen".to_string();
     map.images.push(Image::External(ExternalImage {
         name: "generic_unhookable".to_string(),
